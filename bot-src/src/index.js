@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { Client, IntentsBitField } = require('discord.js');
+const eventHandler = require('./handlers/event-handler');
 
 const bot = new Client({
     intents: [
@@ -10,17 +11,6 @@ const bot = new Client({
     ]
 });
 
-bot.on('ready', (client) => {
-    console.log(`🐌 ${client.user.tag.slice(0, client.user.tag.indexOf('#'))} has initialized, please add water for continuous operation...`);
-});
-
-bot.on('messageCreate', (msg) => {
-    const messageContents = msg.content;
-    const messageSender = msg.author;
-    
-    if(!messageSender.bot){
-        msg.reply('Who is talking... please stop...')
-    }
-})
+eventHandler(bot);
 
 bot.login(process.env.BOT_TOKEN);
