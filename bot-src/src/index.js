@@ -1,16 +1,18 @@
 require('dotenv').config();
-const { Client, IntentsBitField } = require('discord.js');
-const eventHandler = require('./handlers/event-handler');
 
-const bot = new Client({
-    intents: [
-        IntentsBitField.Flags.Guilds,
-        IntentsBitField.Flags.GuildMembers,
-        IntentsBitField.Flags.GuildMessages,
-        IntentsBitField.Flags.MessageContent,
-    ]
-});
+const loadCommands = require('./utils/load_commands');
+const loadEvents = require('./utils/load_events');
 
-eventHandler(bot);
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
-bot.login(process.env.BOT_TOKEN);
+const botToken = process.env.BOT_TOKEN;
+
+const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+bot.commands = new Collection();
+bot.cooldowns = new Collection();
+
+loadCommands(bot);
+loadEvents(bot);
+
+bot.login(botToken);
